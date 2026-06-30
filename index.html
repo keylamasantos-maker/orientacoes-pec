@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PeC — Orientações de Audiência</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f9;color:#1a1a2e;min-height:100vh}
+  :root{
+    --navy:#1F4E79;--blue:#2F5496;--light:#EBF2FA;--border:#C8D8EE;
+    --muted:#6b7a99;--green:#1a7f4b;--gl:#e6f6ee;--amber:#b45309;--al:#fef9ec;
+    --r:8px;--sh:0 2px 12px rgba(31,78,121,.10);
+  }
+  header{background:var(--navy);color:#fff;padding:0 28px;height:56px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.25);position:sticky;top:0;z-index:100}
+  .logo{font-size:15px;font-weight:700;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+  .hbadge{background:rgba(255,255,255,.15);font-size:11px;padding:2px 8px;border-radius:20px;letter-spacing:.06em}
+  .hspacer{flex:1}
+  .steps{display:flex;gap:6px;align-items:center;font-size:12px}
+  .step{color:rgba(255,255,255,.4)}.step.active{color:#fff;font-weight:600}.step.done{color:#7ecfa8}
+  .sep{color:rgba(255,255,255,.25)}
+  .shell{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+  .panel{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--border);overflow:hidden}
+  .ph{background:var(--light);border-bottom:1px solid var(--border);padding:14px 20px}
+  .ph h2{font-size:14px;font-weight:700;color:var(--navy)}
+  .ph p{font-size:12px;color:var(--muted);margin-top:2px}
+  .pb{padding:20px}
+  .drop{border:2px dashed var(--border);border-radius:var(--r);padding:44px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+  .drop:hover,.drop.over{border-color:var(--blue);background:var(--light)}
+  .drop svg{color:var(--blue);margin-bottom:12px;opacity:.7}
+  .drop h3{font-size:15px;color:var(--navy);margin-bottom:6px}
+  .drop p{font-size:13px;color:var(--muted)}
+  .sheet-row{display:none;align-items:center;gap:10px;margin-top:16px}
+  .sheet-row.on{display:flex}
+  .sheet-row label{font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap}
+  select,input[type=email],input[type=text],textarea{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;color:#1a1a2e;background:#fff;font-family:inherit}
+  select:focus,input:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px rgba(47,84,150,.15)}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:filter .15s}
+  .btn:active{transform:scale(.97)}
+  .bp{background:var(--blue);color:#fff}.bp:hover{filter:brightness(1.1)}
+  .bg{background:transparent;color:var(--navy);border:1px solid var(--border)}.bg:hover{background:var(--light)}
+  .bs{background:var(--green);color:#fff}.bs:hover{filter:brightness(1.1)}
+  .bsm{padding:6px 12px;font-size:12px}
+  .status{font-size:12px;margin-top:10px;padding:6px 10px;border-radius:5px;min-height:22px}
+  .si{background:var(--light);color:var(--blue)}.sw{background:var(--al);color:var(--amber)}.sk{background:var(--gl);color:var(--green)}
+.filter-box{display:none;background:var(--light);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-top:14px}
+.filter-box.on{display:block}
+.filter-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.filter-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.filter-row label{font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap}
+input[type=date]{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;color:#1a1a2e;background:#fff;font-family:inherit}
+input[type=date]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px rgba(47,84,150,.15)}
+.filter-count{font-size:12px;color:var(--muted);margin-top:8px;min-height:16px}
+  .stoggle{font-size:12px;color:var(--blue);cursor:pointer;display:inline-flex;align-items:center;gap:4px;text-decoration:underline;text-underline-offset:2px;margin-top:10px}
+  #spanel{display:none;margin-top:12px}#spanel.on{display:block}
+  .stbl{width:100%;border-collapse:collapse;font-size:13px}
+  .stbl th{text-align:left;padding:7px 10px;background:var(--light);color:var(--navy);font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+  .stbl td{padding:5px 8px;border-bottom:1px solid #eef2f7}
+  .stbl tr:last-child td{border-bottom:none}
+  .stbl input{width:100%;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px}
+  #s1{display:block}#s2{display:none}
+  .toolbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--light);flex-wrap:wrap}
+  .cbadge{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--border);padding:3px 10px;border-radius:20px}
+  .nbadge{font-size:12px;background:var(--al);border:1px solid #fcd34d;color:var(--amber);padding:3px 10px;border-radius:20px;display:none}
+  .elist{padding:12px;display:flex;flex-direction:column;gap:8px}
+  .ecard{border:1px solid var(--border);border-radius:7px;overflow:hidden;background:#fff}
+  .chead{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
+  .chead:hover{background:var(--light)}
+  .cnum{min-width:26px;height:26px;background:var(--navy);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .cinfo{flex:1;min-width:0}
+  .cproc{font-size:13px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .csub{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ctobadge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+  .has-email{background:var(--gl);color:var(--green)}.no-email{background:var(--al);color:var(--amber)}
+  .chev{color:var(--muted);transition:transform .2s;font-size:18px}
+  .ecard.open .chev{transform:rotate(180deg)}
+  .cbody{display:none;border-top:1px solid var(--border)}
+  .ecard.open .cbody{display:block}
+  .ewrap{display:grid;grid-template-columns:200px 1fr;min-height:360px}
+  .emeta{background:var(--light);border-right:1px solid var(--border);padding:14px;display:flex;flex-direction:column;gap:12px}
+  .mf label{display:block;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+  .mf input,.mf textarea{width:100%;font-size:12px;resize:vertical}
+  .mf textarea{min-height:55px}
+  .ebody{padding:14px;display:flex;flex-direction:column;gap:8px}
+  .ebody label{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em}
+  .sinput{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:inherit}
+  .sinput:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px rgba(47,84,150,.15)}
+  .bprev{flex:1;min-height:260px;border:1px solid var(--border);border-radius:5px;padding:14px 16px;font-size:11pt;font-family:Calibri,sans-serif;background:#fff;overflow-y:auto;line-height:1.5;line-height:1.6;color:#333}
+  .cactions{padding:10px 14px;border-top:1px solid var(--border);background:#fafcff;display:flex;gap:8px;justify-content:flex-end;align-items:center}
+  .outlook-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;background:#0078D4;color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:filter .15s}
+  .outlook-btn:hover{filter:brightness(1.1)}
+  .outlook-btn svg{width:16px;height:16px}
+  @media(max-width:700px){.ewrap{grid-template-columns:1fr}.emeta{border-right:none;border-bottom:1px solid var(--border)}}
+
+.filter-box{display:none;background:var(--light);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-top:14px}
+.filter-box.on{display:block}
+.filter-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.filter-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.filter-row label{font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap}
+input[type=date]{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;color:#1a1a2e;background:#fff;font-family:inherit}
+input[type=date]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px rgba(47,84,150,.15)}
+.filter-count{font-size:12px;color:var(--muted);margin-top:8px;min-height:16px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+    PeC · Orientações de Audiência
+  </div>
+  <span class="hbadge">E1</span>
+  <div class="hspacer"></div>
+  <div class="steps">
+    <span class="step active" id="hs1">1 · Importar pauta</span>
+    <span class="sep">›</span>
+    <span class="step" id="hs2">2 · Revisar e-mails</span>
+    <span class="sep">›</span>
+    <span class="step" id="hs3">3 · Abrir no Outlook</span>
+  </div>
+</header>
+
+<div class="shell">
+
+  <div id="s1">
+    <div class="panel">
+      <div class="ph"><h2>Importar Pauta</h2><p>Carregue o arquivo Excel. O sistema filtra automaticamente as linhas com "Sim" na coluna R (Enviar Orientação).</p></div>
+      <div class="pb">
+        <div class="drop" id="drop" onclick="document.getElementById('fi').click()">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12V4M8 8l4-4 4 4"/></svg>
+          <h3>Soltar arquivo aqui ou clicar para selecionar</h3>
+          <p>Pauta_E1.xlsx — qualquer aba mensal</p>
+        </div>
+        <input type="file" id="fi" accept=".xlsx,.xls" style="display:none">
+        <div id="spBaseWrap" style="margin-top:14px;display:none">
+          <div style="background:#EBF2FA;border:1px solid #C8D8EE;border-radius:8px;padding:14px 18px">
+            <div style="font-size:13px;font-weight:700;color:#1F4E79;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              URL da pasta de íntegras (OneDrive / SharePoint)
+            </div>
+            <input type="text" id="spBase" 
+              placeholder="https://peixotoecuryadv-my.sharepoint.com/personal/alh_.../Documents/Integra%20de%20processos/"
+              style="width:100%;font-size:12px;padding:7px 10px;border:1px solid #C8D8EE;border-radius:6px;font-family:inherit"
+              value="https://peixotoecuryadv-my.sharepoint.com/personal/alh_peixotoecury_com_br/Documents/Integra%20de%20processos/">
+            <div style="font-size:11px;color:#6b7a99;margin-top:6px">
+              O sistema concatena esta URL com o nome do arquivo da coluna "Link da Íntegra" da planilha.
+            </div>
+          </div>
+        </div>
+
+        <div id="spBaseWrap" style="margin-top:14px;display:none">
+          <div style="background:#EBF2FA;border:1px solid #C8D8EE;border-radius:8px;padding:14px 18px">
+            <div style="font-size:13px;font-weight:700;color:#1F4E79;margin-bottom:8px">&#128279; URL da pasta de íntegras (OneDrive / SharePoint)</div>
+            <input type="text" id="spBase"
+              placeholder="https://peixotoecuryadv-my.sharepoint.com/.../Documents/Integra%20de%20processos/"
+              style="width:100%;font-size:12px;padding:7px 10px;border:1px solid #C8D8EE;border-radius:6px;font-family:inherit"
+              value="https://peixotoecuryadv-my.sharepoint.com/personal/alh_peixotoecury_com_br/Documents/Integra%20de%20processos/">
+            <div id="paramStatus" style="font-size:11px;color:#1a7f4b;margin-top:6px;display:none"></div>
+          </div>
+        </div>
+
+        <div class="filter-box" id="filterBox">
+          <div class="filter-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Filtrar por período de audiências
+          </div>
+          <div class="filter-row">
+            <label>De:</label><input type="date" id="dtDe" onchange="updateFilterCount()">
+            <label>Até:</label><input type="date" id="dtAte" onchange="updateFilterCount()">
+            <button class="btn bg bsm" onclick="clearDates()">Limpar filtro</button>
+          </div>
+          <div class="filter-count" id="filterCount"></div>
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+          <button class="btn bp" id="btnProc" onclick="processSheet()" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Processar
+          </button>
+        </div>
+
+        <div class="sheet-row" id="shrow">
+          <label>Aba:</label>
+          <select id="shsel" style="flex:1" onchange="onSheetLoad()"></select>
+          <button class="btn bp" onclick="processSheet()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Processar
+          </button>
+        </div>
+
+        <div class="filter-box" id="filterBox">
+          <div class="filter-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Filtrar por período de audiências
+          </div>
+          <div class="filter-row">
+            <label>De:</label>
+            <input type="date" id="dtDe" onchange="updateFilterCount()">
+            <label>Até:</label>
+            <input type="date" id="dtAte" onchange="updateFilterCount()">
+            <button class="btn bg bsm" onclick="clearDates()">Limpar filtro</button>
+          </div>
+          <div class="filter-count" id="filterCount"></div>
+        </div>
+
+        <div id="upst" class="status"></div>
+
+        <span class="stoggle" onclick="toggleSiglas()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          Gerenciar siglas e e-mails dos advogados
+        </span>
+        <div id="spanel">
+          <div class="panel" style="margin-top:8px">
+            <div class="ph"><h2>Tabela de Siglas</h2><p>Vincule cada sigla ao e-mail. Usado para preencher o campo Para: automaticamente.</p></div>
+            <div class="pb">
+              <table class="stbl">
+                <thead><tr><th>Sigla / Nome</th><th>E-mail</th><th></th></tr></thead>
+                <tbody id="stbody"></tbody>
+              </table>
+              <button class="btn bg bsm" style="margin-top:8px" onclick="addSigla()">+ Adicionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="s2">
+    <div class="panel">
+      <div class="toolbar">
+        <button class="btn bg bsm" onclick="goBack()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Voltar
+        </button>
+        <span class="cbadge" id="cbadge"></span>
+        <span class="nbadge" id="nbadge"></span>
+        <div style="flex:1"></div>
+        <button class="btn bg bsm" onclick="expandAll()">Expandir todos</button>
+        <button class="btn bg bsm" onclick="collapseAll()">Recolher todos</button>
+        <button class="btn bs" onclick="openAll()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+          Abrir todos no Outlook
+        </button>
+      </div>
+      <div class="elist" id="elist"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var wb=null, emails=[];
+var _advEmails={}, _prepEmails={};
+
+var DEF_SIGLAS=[
+  {s:'Carlos Florian',e:'cf@carlosflorian.com.br'},
+  {s:'VRO',e:'vinicius.ronchi@peixotoecury.com.br'},
+  {s:'TLI',e:'tamireslins.costa@peixotoecury.com.br'},
+  {s:'Ana',e:'anacarolinateresanicj@gmail.com'},
+  {s:'Izildinha',e:'anacarolinateresanicj@gmail.com'},
+  {s:'Luis',e:'amortir@hotmail.com'},
+  {s:'JRM',e:'joice.miranda@peixotoecury.com.br'},
+  {s:'DPR',e:'daniela.ricca@peixotoecury.com.br'},
+  {s:'PSI',e:'paloma.santos@peixotoecury.com.br'},
+  {s:'GBS',e:''},{s:'ALF',e:''},{s:'JPL',e:''},{s:'NAF',e:''},{s:'GRA',e:''},
+  {s:'DOC9',e:''},{s:'Doc9',e:''},
+];
+
+// ── Siglas ────────────────────────────────────────────────────────────────
+function getSiglas(){
+  try{var s=JSON.parse(localStorage.getItem('pec_sig')||'null');if(s)return s;}catch(e){}
+  var keys=Object.keys(_advEmails);
+  if(keys.length)return keys.map(function(k){return{s:k,e:_advEmails[k]}});
+  return DEF_SIGLAS;
+}
+function saveSiglas(a){localStorage.setItem('pec_sig',JSON.stringify(a))}
+function renderSiglas(){
+  var a=getSiglas();
+  document.getElementById('stbody').innerHTML=a.map(function(r,i){
+    var bid='sig'+i;
+    return'<tr><td><input value="'+esc(r.s)+'" onchange="updSigKey('+i+',this.value)" placeholder="Sigla"></td>'+
+      '<td><input value="'+esc(r.e)+'" onchange="updSigEmail('+i+',this.value)" placeholder="email@escritorio.com.br" type="email"></td>'+
+      '<td><button class="btn bg bsm" style="color:#c0392b" onclick="remS('+i+')">&#x2715;</button></td></tr>';
+  }).join('');
+}
+function updS(i,k,v){var a=getSiglas();a[i][k]=v.trim();saveSiglas(a);}
+function updSigKey(i,v){updS(i,'s',v);}
+function updSigEmail(i,v){updS(i,'e',v);}
+function remS(i){var a=getSiglas();a.splice(i,1);saveSiglas(a);renderSiglas()}
+function addSigla(){var a=getSiglas();a.push({s:'',e:''});saveSiglas(a);renderSiglas()}
+function toggleSiglas(){document.getElementById('spanel').classList.toggle('on');renderSiglas()}
+
+// ── Load params from Parâmentros sheet ────────────────────────────────────
+function loadParamSheet(workbook){
+  var names=['Parâmentros','Parametros','Parâmetros','PARAMETROS','parametros'];
+  var ws=null;
+  for(var i=0;i<names.length;i++){if(workbook.Sheets[names[i]]){ws=workbook.Sheets[names[i]];break;}}
+  if(!ws){console.warn('Aba de parâmetros não encontrada');return;}
+  var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  _advEmails={};_prepEmails={};
+  for(var r=1;r<rows.length;r++){
+    var row=rows[r];
+    var an=String(row[0]||'').trim(), ae=String(row[1]||'').trim().replace(/^	+/,'');
+    if(an&&ae)_advEmails[an.toLowerCase()]=ae;
+    var pn=String(row[4]||'').trim(), pe=String(row[5]||'').trim().replace(/^	+/,'');
+    if(pn)_prepEmails[pn.toLowerCase()]=pe||'';
+  }
+  var ps=document.getElementById('paramStatus');
+  if(ps){
+    ps.textContent='✓ Parâmetros carregados: '+Object.keys(_advEmails).length+' advogados, '+Object.keys(_prepEmails).length+' prepostos';
+    ps.style.display='block';
+  }
+  function setPreposto(i,v){emails[i].d.preposto=v||'—';refreshPreview(i);}
+renderSiglas();
+}
+
+// ── Email resolution ───────────────────────────────────────────────────────
+function emailFromName(name){
+  var s=String(name||'').trim();
+  if(!s||s==='-'||s==='N/A'||s==='Sim'||s==='Não'||s==='Nao'||s==='Contratado'||s==='Contratar')return'';
+  if(s.indexOf('@')>-1)return s;
+  var sl=s.toLowerCase();
+  if(_prepEmails.hasOwnProperty(sl)&&_prepEmails[sl])return _prepEmails[sl];
+  if(_advEmails.hasOwnProperty(sl)&&_advEmails[sl])return _advEmails[sl];
+  var ak=Object.keys(_advEmails);
+  for(var i=0;i<ak.length;i++){if(sl===ak[i]||sl.indexOf(ak[i])>-1||ak[i].indexOf(sl)>-1)return _advEmails[ak[i]]||'';}
+  var sigs=DEF_SIGLAS;
+  for(var i=0;i<sigs.length;i++){if(sigs[i].s&&sl===sigs[i].s.toLowerCase())return sigs[i].e||'';}
+  return'';
+}
+function resolveEmail(colQ,advStr,prepostoStr){
+  var q=String(colQ||'').trim();
+  if(q&&q!=='-'&&q.indexOf('@')>-1)return q;
+  var ep=emailFromName(prepostoStr||'');if(ep)return ep;
+  return emailFromName(advStr||'');
+}
+
+// ── File loading ───────────────────────────────────────────────────────────
+var drop=document.getElementById('drop');
+drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over')});
+drop.addEventListener('dragleave',function(){drop.classList.remove('over')});
+drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('over');loadFile(e.dataTransfer.files[0])});
+document.getElementById('fi').addEventListener('change',function(e){loadFile(e.target.files[0])});
+
+function loadFile(f){
+  if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){
+    wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
+    loadParamSheet(wb);
+    var HIDDEN=['parâmentros','parametros','parâmetros','parameters','config'];
+    var visible=wb.SheetNames.filter(function(n){return HIDDEN.indexOf(n.toLowerCase().trim())===-1;});
+    var sel=document.getElementById('shsel');
+    sel.innerHTML=visible.map(function(n){return'<option>'+esc(n)+'</option>'}).join('');
+    sel.selectedIndex=visible.length-1;
+    document.getElementById('shrow').classList.add('on');
+    document.getElementById('spBaseWrap').style.display='';
+    document.getElementById('btnProc').style.display='';
+    setStatus('"'+f.name+'" carregado — '+visible.length+' abas de pauta','sk');
+    setTimeout(onSheetLoad,100);
+  };
+  r.readAsArrayBuffer(f);
+}
+
+// ── Sheet loading & filter ─────────────────────────────────────────────────
+var _allSim=[], _currentK={}, _currentName='';
+
+function parseRowDate(s){
+  if(!s)return null;
+  var m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if(m)return new Date(parseInt(m[3]),parseInt(m[2])-1,parseInt(m[1]));
+  var m2=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m2)return new Date(parseInt(m2[1]),parseInt(m2[2])-1,parseInt(m2[3]));
+  return null;
+}
+function toInputDate(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function clearDates(){document.getElementById('dtDe').value='';document.getElementById('dtAte').value='';updateFilterCount();}
+function getFilteredRows(){
+  var de=document.getElementById('dtDe').value, ate=document.getElementById('dtAte').value;
+  if(!de&&!ate)return _allSim;
+  return _allSim.filter(function(r){
+    var raw=g(r,_currentK.data);
+    var d=parseRowDate(fmtD(raw)||raw);
+    if(!d)return true;
+    if(de&&d<new Date(de))return false;
+    if(ate){var ad=new Date(ate);ad.setHours(23,59,59);if(d>ad)return false;}
+    return true;
+  });
+}
+function updateFilterCount(){
+  var n=getFilteredRows().length,total=_allSim.length;
+  document.getElementById('filterCount').textContent=n===total?total+' audiências com envio = Sim':n+' de '+total+' audiências no período selecionado';
+}
+function onSheetLoad(){
+  var name=document.getElementById('shsel').value;
+  if(!wb||!name)return;
+  var ws=wb.Sheets[name];
+  if(!ws)return;
+  var raw=XLSX.utils.sheet_to_json(ws,{raw:false,defval:''});
+  if(!raw.length)return;
+  var keys=Object.keys(raw[0]);
+  function fk(){
+    var pats=Array.prototype.slice.call(arguments);
+    for(var i=0;i<keys.length;i++)for(var j=0;j<pats.length;j++)
+      if(keys[i].toLowerCase().trim().indexOf(pats[j].toLowerCase())>-1)return keys[i];
+    return null;
+  }
+  _currentK={
+    data:fk('data'),hora:fk('horário','horario'),tipo:fk('tipo de agendamento'),
+    processo:fk('processo'),principal:fk('parte principal'),contraria:fk('parte contrária','parte contraria'),
+    comarca:fk('comarca'),uf:fk('uf'),vara:fk('vara'),
+    adv:fk('advogado responsável audiência','advogado responsavel audiencia'),
+    materia:fk('matéria de prova','materia de prova'),
+    preposto:fk('preposto'),
+    emailCol:fk('email adv'),
+    enviar:fk('enviar orientação','enviar orientacao','mandar ou não','mandar ou nao'),
+    integra:fk('íntegra dos autos','íntegra','integra','link da integra'),
+    link:fk('link da audiência','link da audiencia','link audiência','link reunião','link zoom','link teams'),
+    obs:fk('observação','observacao'),terceiros:fk('terceiros'),
+  };
+  _currentName=name;
+  _allSim=_currentK.enviar?raw.filter(function(r){return String(r[_currentK.enviar]||'').trim().toLowerCase()==='sim';}):[];
+  var dates=_allSim.map(function(r){var v=g(r,_currentK.data);return parseRowDate(fmtD(v)||v);}).filter(Boolean).sort(function(a,b){return a-b;});
+  if(dates.length){document.getElementById('dtDe').value=toInputDate(dates[0]);document.getElementById('dtAte').value=toInputDate(dates[dates.length-1]);}
+  document.getElementById('filterBox').classList.add('on');
+  updateFilterCount();
+}
+
+// ── mapPreposto ─────────────────────────────────────────────────────────────
+function mapPreposto(val){
+  var v=String(val||'').trim();
+  if(!v||v==='-'||v==='N/A'||v.toLowerCase()==='não'||v.toLowerCase()==='nao')return'—';
+  return v;
+}
+
+// ── processSheet ────────────────────────────────────────────────────────────
+function buildCC(principal){
+  var p=String(principal||'').toLowerCase();
+  var isMahle=p.indexOf('mahle')>-1||p.indexOf('bosch')>-1||p.indexOf('nutrade')>-1||p.indexOf('kubix')>-1;
+  var grupo=isMahle?'grupomahle@peixotoecury.com.br':'gruposyngenta@peixotoecury.com.br';
+  return grupo+'; keyla.moraes@peixotoecury.com.br; larissa.lekich@peixotoecury.com.br';
+}
+function processSheet(){
+  setStatus('Processando...','si');
+  if(!wb){setStatus('Carregue um arquivo Excel primeiro.','sw');return;}
+  if(!_currentK.enviar){setStatus('Coluna "Enviar Orientação" não encontrada nessa aba.','sw');return;}
+  var filtered=getFilteredRows();
+  if(!filtered.length){setStatus('Nenhuma audiência com "Sim" no período selecionado.','sw');return;}
+  try{
+    emails=filtered.map(function(r){
+      var K=_currentK;
+      var d={
+        data:g(r,K.data),hora:g(r,K.hora),tipo:g(r,K.tipo),processo:g(r,K.processo),
+        principal:g(r,K.principal),contraria:g(r,K.contraria),comarca:g(r,K.comarca),
+        uf:g(r,K.uf),vara:g(r,K.vara),adv:g(r,K.adv),materia:g(r,K.materia),
+        integra:g(r,K.integra),link:g(r,K.link),obs:g(r,K.obs),
+        preposto:mapPreposto(g(r,K.preposto)),testemunha:'',
+      };
+      var to=resolveEmail(g(r,K.emailCol),d.adv,g(r,K.preposto));
+      var cc=buildCC(d.principal);
+      return{to:to,cc:cc,d:d};
+    });
+    renderEmails(_currentName);
+  }catch(err){
+    setStatus('Erro: '+err.message,'sw');
+    console.error(err);
+  }
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function g(r,k){if(!k)return'';var v=String(r[k]||'').trim();return(v==='None'||v==='-'||v==='N/A')?'':v;}
+function fmtH(h){if(!h)return'';var m=String(h).match(/^(\d{1,2}):(\d{2})/);if(m)return m[2]==='00'?m[1]+'h':m[1]+'h'+m[2]+'min';return h;}
+function fmtD(d){if(!d)return'';var s=String(d);if(/^\d{2}\/\d{2}\/\d{4}$/.test(s))return s;var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:s;}
+function getTag(pp){var p=String(pp||'').toLowerCase();if(p.indexOf('seeds')>-1)return'S. SEEDS';if(p.indexOf('proteção')>-1||p.indexOf('protecao')>-1||p.indexOf('cultivos')>-1)return'S. CROP';if(p.indexOf('syngenta')>-1&&(p.indexOf('comercial')>-1||p.indexOf('brasil')>-1))return'S. CROP';return String(pp||'').split(' ').slice(0,2).join(' ');}
+function getTipo(t){var s=String(t||'').toLowerCase();if(s.indexOf('instrução')>-1||s.indexOf('instrucao')>-1)return'Audiência de Instrução';if(s.indexOf('inicial')>-1)return'Audiência Inicial';if(s.indexOf('una')>-1)return'Audiência Una';if(s.indexOf('concili')>-1)return'Audiência de Conciliação';return String(t||'').trim();}
+function getModal(t){var s=String(t||'').toLowerCase();if(s.indexOf('telepresencial')>-1)return'TELEPRESENCIAL';if(s.indexOf('semipresencial')>-1)return'SEMIPRESENCIAL';return'PRESENCIAL';}
+function buildSubject(d){return'(PeC)-Orientação – '+getTag(d.principal)+' - Orientação - '+getTipo(d.tipo)+' – '+getModal(d.tipo)+' – '+fmtD(d.data)+' - '+fmtH(d.hora)+' - '+d.processo+' - '+d.contraria+' X '+d.principal;}
+function isUnaOrInstrucao(tipo){var t=String(tipo||'').toLowerCase();return t.indexOf('una')>-1||t.indexOf('instrução')>-1||t.indexOf('instrucao')>-1;}
+
+// ── Build HTML body ─────────────────────────────────────────────────────────
+function buildLinkUrl(val){
+  if(!val||val==='-'||val==='N/A')return null;
+  var v=val.trim();if(!v)return null;
+  if(/^https?:\/\//i.test(v))return v;
+  var spEl=document.getElementById('spBase');
+  var base=spEl?spEl.value.trim():'';
+  if(base){if(!base.endsWith('/'))base+='/';return base+encodeURIComponent(v);}
+  return null;
+}
+function makeLink(url,label){
+  if(!url)return'—';
+  var href=buildLinkUrl(url);
+  if(href)return'<a href="'+href+'" target="_blank" style="color:#0563C1;text-decoration:underline">'+(label||'↗ Abrir')+'</a><span style="font-size:10pt;color:#888;margin-left:6px">('+url+')</span>';
+  return'<span style="color:#555">'+url+'</span>';
+}
+function buildBodyHtml(d){
+  var modal=getModal(d.tipo),isV=modal==='TELEPRESENCIAL';
+  var local=(d.vara||'')+(d.comarca?' de '+d.comarca:'')+(d.uf?' – '+d.uf:'');
+  var ped=String(d.materia||'').split(/[;,]/).map(function(s){return s.trim();}).filter(Boolean);
+  var obsT=isV
+    ?'Considerar para audiências virtuais: Verificar o link com 15 (quinze) minutos de antecedência e acessar a sala virtual antes do início.'
+    :'Considerar para audiências presenciais: Chegar ao local com 1 (uma) hora de antecedência.';
+  function row(l,v){return'<tr><td style="font-family:Calibri,sans-serif;font-size:11pt;font-weight:bold;color:#2F5496;padding:2px 18px 2px 0;white-space:nowrap;vertical-align:top">'+l+'</td><td style="font-family:Calibri,sans-serif;font-size:11pt;vertical-align:top">'+(v||'—')+'</td></tr>';}
+  function sec(t){return'<p style="font-family:Calibri,sans-serif;font-size:11pt;font-weight:bold;color:#1F4E79;margin:14px 0 4px 0">'+t+'</p>';}
+  function par(t){return'<p style="font-family:Calibri,sans-serif;font-size:11pt;margin:4px 0">'+t+'</p>';}
+  var dr='';
+  var iu=buildLinkUrl(d.integra);
+  if(d.integra)dr+=row('Íntegra dos autos:',iu?'<a href="'+iu+'" target="_blank" style="color:#0563C1;font-weight:bold">↗ Abrir íntegra</a> <span style="font-size:10pt;color:#888">('+d.integra+')</span>':d.integra);
+  dr+=row('Data:',fmtD(d.data))+row('Horário:',fmtH(d.hora))+row('Modalidade:',modal)+row('Local:',local);
+  if(isV&&d.link){var lu=buildLinkUrl(d.link);if(lu)dr+=row('Link da audiência:','<a href="'+lu+'" target="_blank" style="color:#0563C1;font-weight:bold">↗ Entrar na audiência</a>');}
+  if(isV&&d.obs)dr+=row('Dados de acesso:',d.obs);
+  var ph='';
+  if(ped.length)ph=sec('Pedidos:')+'<ul style="font-family:Calibri,sans-serif;font-size:11pt;margin:4px 0 4px 22px;padding:0">'+ped.map(function(p){return'<li style="margin:2px 0">'+p+'</li>';}).join('')+'</ul>';
+  return'<div style="font-family:Calibri,sans-serif;font-size:11pt;color:#000">'+
+    par('Equipe,')+par('Informamos os dados referentes à audiência, abaixo:')+
+    '<br><table cellpadding="0" cellspacing="0" border="0">'+dr+'</table>'+
+    '<br>'+sec('Partes para condução:')+
+    '<table cellpadding="0" cellspacing="0" border="0">'+
+      row('Preposto(a):',d.preposto||'—')+
+      row('Advogado(a):',d.adv||'—')+
+      row('Testemunha:',d.testemunha||'Não')+
+    '</table>'+
+    '<br><table cellpadding="0" cellspacing="0" border="0">'+row('Matéria de Prova:',d.materia||'—')+'</table>'+
+    ph+'<br>'+sec('Observações:')+
+    par(obsT)+
+    par('Anexo as principais peças dos autos existentes até o presente momento.')+
+    par('E, em necessidade de complementação ou esclarecimentos, por gentileza, entrar em contato em resposta a este e-mail.')+
+    par('Honorários prévios, com teto estipulado de R$ 800,00 para cada perícia.')+
+    '<br>'+par('À disposição.')+par('Atenciosamente,')+'</div>';
+}
+function buildBody(d){
+  var modal=getModal(d.tipo),isV=modal==='TELEPRESENCIAL';
+  var local=(d.vara||'')+(d.comarca?' de '+d.comarca:'')+(d.uf?' - '+d.uf:'');
+  var ped=String(d.materia||'').split(/[;,]/).map(function(s){return s.trim();}).filter(Boolean);
+  var obsT=isV
+    ?'Considerar para audiências virtuais: Verificar o link com 15 (quinze) minutos de antecedência e acessar a sala virtual antes do início.'
+    :'Considerar para audiências presenciais: Chegar ao local com 1 (uma) hora de antecedência.';
+  var rows=[
+    d.integra?'Íntegra dos autos:   '+(buildLinkUrl(d.integra)||d.integra):null,
+    'Data:                '+fmtD(d.data),
+    'Horário:             '+fmtH(d.hora),
+    'Modalidade:          '+modal,
+    'Local:               '+local,
+    (isV&&d.link&&buildLinkUrl(d.link))?'Link da audiência:   '+buildLinkUrl(d.link):null,
+    (isV&&d.obs)?'Dados de acesso:     '+d.obs:null,
+  ].filter(Boolean).join('\n');
+  var partes=['Preposto(a):         '+(d.preposto||'—'),'Advogado(a):         '+(d.adv||'—'),'Testemunha:          '+(d.testemunha||'Não')].join('\n');
+  var pedB=ped.length?'\nPedidos:\n'+ped.map(function(p){return'• '+p;}).join('\n'):'';
+  return['Equipe,','','Informamos os dados referentes à audiência, abaixo:','',rows,'','Partes para condução:',partes,'','Matéria de Prova:    '+(d.materia||'—'),pedB,'','Observações:',obsT,'Anexo as principais peças dos autos existentes até o presente momento.','E, em necessidade de complementação ou esclarecimentos, por gentileza, entrar em contato em resposta a este e-mail.','• Honorários prévios, com teto estipulado de R$ 800,00 para cada perícia;','','À disposição.','Atenciosamente,'].join('\n');
+}
+function buildMailto(em){
+  var d=em.d;
+  return'mailto:'+encodeURIComponent(em.to||'')+'?cc='+encodeURIComponent(em.cc)+'&subject='+encodeURIComponent(buildSubject(d))+'&body='+encodeURIComponent(buildBody(d));
+}
+
+// ── Render ──────────────────────────────────────────────────────────────────
+function renderEmails(name){
+  document.getElementById('s1').style.display='none';
+  document.getElementById('s2').style.display='block';
+  document.getElementById('hs1').className='step done';
+  document.getElementById('hs2').className='step active';
+  var noE=emails.filter(function(e){return!e.to;}).length;
+  document.getElementById('cbadge').textContent=emails.length+' e-mails · '+name;
+  var nb=document.getElementById('nbadge');
+  if(noE){nb.textContent=noE+' sem destinatário';nb.style.display='';}else nb.style.display='none';
+  var list=document.getElementById('elist');list.innerHTML='';
+  emails.forEach(function(em,i){
+    var div=document.createElement('div');div.className='ecard';div.id='ec'+i;
+    div.innerHTML=buildCardHTML(em,i);list.appendChild(div);
+    document.getElementById('pv'+i).innerHTML=buildBodyHtml(em.d);
+  });
+}
+function buildCardHTML(em,i){
+  var d=em.d,hasTo=em.to&&em.to.indexOf('@')>-1;
+  var sub=fmtD(d.data)+' '+fmtH(d.hora)+' · '+getTipo(d.tipo)+' · '+getModal(d.tipo);
+  var showTest=isUnaOrInstrucao(d.tipo);
+  return'<div class="chead" onclick="toggleCard('+i+')">'+
+    '<div class="cnum">'+(i+1)+'</div>'+
+    '<div class="cinfo"><div class="cproc">'+esc(d.processo)+' · '+esc(d.contraria)+'</div><div class="csub">'+esc(sub)+'</div></div>'+
+    '<span class="ctobadge '+(hasTo?'has-email':'no-email')+'" id="tb'+i+'">'+(hasTo?esc(em.to):'Sem destinatário')+'</span>'+
+    '<span class="chev">&#9662;</span></div>'+
+  '<div class="cbody"><div class="ewrap">'+
+    '<div class="emeta">'+
+      '<div class="mf"><label>Para</label><input id="to'+i+'" value="'+esc(em.to)+'" type="email" placeholder="email@exemplo.com" oninput="emails['+i+'].to=this.value;refreshBadge('+i+')"></div>'+
+      '<div class="mf"><label>CC</label><textarea id="cc'+i+'" oninput="emails['+i+'].cc=this.value">'+esc(em.cc)+'</textarea></div>'+
+      '<div class="mf"><label>Preposto(a)</label><input id="pr'+i+'" value="'+esc(d.preposto==='\u2014'?'':d.preposto)+'" placeholder="Nome do preposto" oninput="setPreposto('+i+',this.value)"></div>'+
+      (showTest?'<div class="mf"><label>Testemunha</label><input id="te'+i+'" value="'+esc(d.testemunha)+'" placeholder="Nome / Não" oninput="emails['+i+'].d.testemunha=this.value;refreshPreview('+i+')"></div>':'')+
+    '</div>'+
+    '<div class="ebody">'+
+      '<span class="elabel">Assunto</span>'+
+      '<input class="sinput" id="sj'+i+'" value="'+esc(buildSubject(d))+'">'+
+      '<span class="elabel" style="margin-top:6px">Pré-visualização — idêntica ao e-mail no Outlook</span>'+
+      '<div class="bprev" id="pv'+i+'"></div>'+
+    '</div>'+
+  '</div>'+
+  '<div class="cactions">'+
+    '<span class="hint">1. Abrir no Outlook · 2. Copiar corpo · 3. Colar Ctrl+V</span>'+
+    '<button class="btn-cp" id="cpb'+i+'" onclick="copyHtml('+i+')">&#128203; Copiar corpo formatado</button>'+
+    '<button class="btn-ol" onclick="openOutlook('+i+')">&#9993; Abrir no Outlook</button>'+
+  '</div></div>';
+}
+function toggleCard(i){document.getElementById('ec'+i).classList.toggle('open');}
+function expandAll(){document.querySelectorAll('.ecard').forEach(function(c){c.classList.add('open');});}
+function collapseAll(){document.querySelectorAll('.ecard').forEach(function(c){c.classList.remove('open');});}
+function refreshBadge(i){var em=emails[i],hasTo=em.to&&em.to.indexOf('@')>-1;var tb=document.getElementById('tb'+i);if(tb){tb.textContent=hasTo?em.to:'Sem destinatário';tb.className='ctobadge '+(hasTo?'has-email':'no-email');}}
+function refreshPreview(i){var pv=document.getElementById('pv'+i);if(pv)pv.innerHTML=buildBodyHtml(emails[i].d);}
+function openOutlook(i){
+  var em=emails[i];
+  var sj=document.getElementById('sj'+i);if(sj)em._subj=sj.value;
+  var url=buildMailto(em);
+  if(em._subj)url=url.replace(/subject=[^&]*/,'subject='+encodeURIComponent(em._subj));
+  window.location.href=url;
+}
+function copyHtml(i){
+  var em=emails[i],html=buildBodyHtml(em.d);
+  var btn=document.getElementById('cpb'+i);
+  function ok(){if(btn){btn.classList.add('copied');btn.textContent='✓ Copiado!';setTimeout(function(){btn.classList.remove('copied');btn.innerHTML='&#128203; Copiar corpo formatado';},2500);}}
+  try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'})})]).then(ok);}
+  catch(e){var tmp=document.createElement('div');tmp.innerHTML=html;tmp.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(tmp);var sel=window.getSelection(),range=document.createRange();range.selectNodeContents(tmp);sel.removeAllRanges();sel.addRange(range);document.execCommand('copy');sel.removeAllRanges();document.body.removeChild(tmp);ok();}
+}
+function goBack(){document.getElementById('s2').style.display='none';document.getElementById('s1').style.display='block';document.getElementById('hs1').className='step active';document.getElementById('hs2').className='step';document.getElementById('hs3').className='step';}
+function setStatus(msg,cls){var el=document.getElementById('upst');el.className='status '+cls;el.textContent=msg;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function setPreposto(i,v){emails[i].d.preposto=v||'—';refreshPreview(i);}
+renderSiglas();
+</script>
+</body>
+</html>
